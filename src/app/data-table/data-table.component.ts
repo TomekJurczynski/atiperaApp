@@ -88,14 +88,13 @@ export class DataTableComponent {
       }
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      this.updateRowData();
-    });
+    dialogRef.afterClosed().subscribe((_) => this.updateRowData());
   }
 
   updateRowData() {
     this.service.GetData().subscribe(result => {
       this.periodicElementList = result;
+      console.log(result, '100')
       this.dataSource = new MatTableDataSource<PeriodicElement>(this.periodicElementList);
     })
   }

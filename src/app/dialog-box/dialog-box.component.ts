@@ -1,8 +1,9 @@
-import { Component, Inject, Optional, OnInit } from '@angular/core';
+import { Component, Inject, Optional, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MasterService } from '../service/master.service';
+import { Subject, takeUntil } from 'rxjs';
 
 
 @Component({
@@ -12,7 +13,7 @@ import { MasterService } from '../service/master.service';
   templateUrl: './dialog-box.component.html',
   styleUrl: './dialog-box.component.scss'
 })
-export class DialogBoxComponent implements OnInit {
+export class DialogBoxComponent implements OnInit, OnDestroy {
   action!: string;
   local_data: any;
   countries!: string[];
@@ -22,6 +23,8 @@ export class DialogBoxComponent implements OnInit {
 
   inputdata: any;
   editdata: any;
+
+  destroy$ = new Subject<void>();
 
   constructor(
     public dialogRef: MatDialogRef<DialogBoxComponent>,
@@ -69,19 +72,26 @@ export class DialogBoxComponent implements OnInit {
     symbol: this.formBuilder.control(''),
     id: this.formBuilder.control('')
   });
-  // creatForm() {
-  //   this.tableForm = this.formBuilder.group({
-  //     name: this.formBuilder.control(''),
-  //     weight: this.formBuilder.control(''),
-  //     symbol: this.formBuilder.control(''),
-  //   });
-  // }
 
   onSubmit() {
-    console.log(this.tableForm.value)
-    this.service.Savedata(this.tableForm.value, this.tableForm.value.id).subscribe(result => {
+    let obj = {
+      name: this.editdata.name,
+      weight: this.editdata.weight,
+      symbol: this.editdata.symbol,
+      id: this.editdata.id
+    }
 
-      this.closeDialog();
-    });
+    if (JSON.stringify(obj) == JSON.stringify(this.tableForm.value)) {
+      this.dialogRef.close();
+    } else {
+      this.service.Savedata(this.tableForm.value, this.tableForm.value.id).pipe(takeUntil(this.destroy$)).subscribe(result => {
+        this.closeDialog();
+      });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
