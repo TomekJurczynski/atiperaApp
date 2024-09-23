@@ -41,8 +41,8 @@ export class DialogBoxComponent implements OnInit, OnDestroy {
     }
   }
 
-  setPopupData(code: any) {
-    this.service.GetDataByCode(code).subscribe(result => {
+  setPopupData(code: number) {
+    this.service.getDataByCode(code).pipe(takeUntil(this.destroy$)).subscribe(result => {
       this.editdata = result;
       this.tableForm.setValue({
         name: this.editdata.name,
@@ -84,7 +84,7 @@ export class DialogBoxComponent implements OnInit, OnDestroy {
     if (JSON.stringify(obj) == JSON.stringify(this.tableForm.value)) {
       this.dialogRef.close();
     } else {
-      this.service.Savedata(this.tableForm.value, this.tableForm.value.id).pipe(takeUntil(this.destroy$)).subscribe(result => {
+      this.service.saveData(this.tableForm.value, this.tableForm.value.id).pipe(takeUntil(this.destroy$)).subscribe(result => {
         this.closeDialog();
       });
     }
