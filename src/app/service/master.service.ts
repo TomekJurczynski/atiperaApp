@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { PeriodicElement } from '../periodic-element';
 
 @Injectable({
@@ -8,7 +6,7 @@ import { PeriodicElement } from '../periodic-element';
 })
 export class MasterService {
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
   ELEMENT_DATA: PeriodicElement[] = [
     { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', action: 'edit' },
@@ -22,17 +20,4 @@ export class MasterService {
     { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F', action: 'edit' },
     { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne', action: 'edit' },
   ];
-
-  getData(): Observable<PeriodicElement[]> {
-    return this.http.get<PeriodicElement[]>("http://localhost:3000/periodicelement");
-  }
-
-  saveData(data: any, code: any) {
-    return this.http.patch("http://localhost:3000/periodicelement/" + code, data);
-  }
-
-  getDataByCode(code: any) {
-    return this.http.get("http://localhost:3000/periodicelement/" + code);
-    //return console.log(code);
-  }
 }

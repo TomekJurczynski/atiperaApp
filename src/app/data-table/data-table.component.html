@@ -27,7 +27,7 @@
   <ng-container matColumnDef="action">
     <th mat-header-cell *matHeaderCellDef> Action </th>
     <td mat-cell *matCellDef="let element">
-      <button mat-icon-button color="primary" (click)="editData(element.id)" matTooltip="Edit row">
+      <button mat-icon-button color="primary" (click)="editData(element)" matTooltip="Edit row">
         <mat-icon>edit</mat-icon>
       </button>
       <!-- (click)="openAddEditDialog(edit, row)" -->
